@@ -534,12 +534,6 @@ def server_error(_error):
 with app.app_context():
     init_db()
 
-
-if __name__ == "__main__":
-    host = os.getenv("FLASK_HOST", "127.0.0.1")
-    port = int(os.getenv("FLASK_PORT", "8000"))
-    debug = os.getenv("FLASK_DEBUG", "false").lower() == "true"
-    app.run(host=host, port=port, debug=debug)
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
