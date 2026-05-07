@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+
+{% block title %}Panel de administración{% endblock %}
+{% block body_class %}admin-body-bg{% endblock %}
+
+{% block content %}
+<header class="admin-header">
+  <div>
+    <div class="admin-eyebrow">Panel seguro</div>
+    <h1>Administración de la landing</h1>
+    <p>Sesión iniciada como <strong>{{ admin_username }}</strong></p>
+  </div>
+  <div class="admin-header-actions">
+    <a class="ghost-btn" href="{{ url_for('index') }}" target="_blank" rel="noopener noreferrer">Ver landing</a>
+    <form method="post" action="{{ url_for('admin_logout') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <button type="submit" class="ghost-btn danger">Cerrar sesión</button>
+    </form>
+  </div>
+</header>
+
+<main class="admin-shell">
+  <section class="admin-panel">
+    <form method="post" action="{{ url_for('admin_save_content') }}" id="contentForm">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+      <div class="panel-grid">
+        <article class="panel-card">
+          <h2>SEO y contacto</h2>
+          <label><span>Título del sitio</span><input type="text" name="site_title" maxlength="120" value="{{ settings.site_title }}" required></label>
+          <label><span>Meta description</span><textarea name="meta_description" maxlength="220" required>{{ settings.meta_description }}</textarea></label>
+          <label><span>WhatsApp</span><input type="text" name="phone" maxlength="20" value="{{ settings.phone }}" required></label>
+          <label><span>Logo / nombre</span><input type="text" name="logo" maxlength="80" value="{{ settings.logo }}" required></label>
+        </article>
+
+        <article class="panel-card">
+          <h2>Hero</h2>
+          <label><span>Badge</span><input type="text" name="hero_badge" maxlength="120" value="{{ settings.hero_badge }}" required></label>
+          <label><span>Título principal</span><textarea name="hero_title" maxlength="160" required>{{ settings.hero_title }}</textarea></label>
+          <label><span>Subtítulo</span><textarea name="hero_sub" maxlength="180" required>{{ settings.hero_sub }}</textarea></label>
+          <label><span>Bono destacado</span><input type="text" name="hero_bonus" maxlength="160" value="{{ settings.hero_bonus }}" required></label>
+        </article>
+
+        <article class="panel-card">
+          <h2>Estadísticas</h2>
+          <label><span>Plataformas</span><input type="text" name="stat_platforms" maxlength="20" value="{{ settings.stat_platforms }}" required></label>
+          <label><span>Soporte</span><input type="text" name="stat_support" maxlength="20" value="{{ settings.stat_support }}" required></label>
+          <label><span>Retiro diario</span><input type="text" name="stat_withdrawal" maxlength="30" value="{{ settings.stat_withdrawal }}" required></label>
+          <label><span>Bono</span><input type="text" name="stat_bonus" maxlength="20" value="{{ settings.stat_bonus }}" required></label>
+        </article>
+
+        <article class="panel-card">
+          <h2>Promo</h2>
+          <label><span>Etiqueta</span><input type="text" name="promo_tag" maxlength="80" value="{{ settings.promo_tag }}" required></label>
+          <label><span>Título</span><input type="text" name="promo_title" maxlength="120" value="{{ settings.promo_title }}" required></label>
+          <label><span>Monto</span><input type="text" name="promo_amount" maxlength="30" value="{{ settings.promo_amount }}" required></label>
+          <label><span>Subtítulo</span><textarea name="promo_sub" maxlength="180" required>{{ settings.promo_sub }}</textarea></label>
+          <div class="three-col">
+            <label><span>Slot máx.</span><input type="text" name="promo_slot" maxlength="30" value="{{ settings.promo_slot }}" required></label>
+            <label><span>Retiro mínimo</span><input type="text" name="promo_withdraw_min" maxlength="30" value="{{ settings.promo_withdraw_min }}" required></label>
+            <label><span>Retiro diario</span><input type="text" name="promo_withdraw_max" maxlength="30" value="{{ settings.promo_withdraw_max }}" required></label>
+          </div>
+          <label><span>Texto CTA</span><input type="text" name="promo_cta" maxlength="80" value="{{ settings.promo_cta }}" required></label>
+        </article>
+      </div>
+
+      <article class="panel-card panel-card-full">
+        <div class="card-head">
+          <div>
+            <h2>Plataformas</h2>
+            <p>Un bloque por casino. Introduce los enlaces uno debajo de otro.</p>
+          </div>
+          <button type="button" class="ghost-btn" id="addCasinoBtn">+ Añadir plataforma</button>
+        </div>
+        <div id="casinoRepeater" class="repeater-stack">
+          {% for casino in casinos %}
+          <div class="repeater-item casino-item">
+            <div class="repeater-toolbar"><strong>Plataforma {{ loop.index }}</strong><button type="button" class="danger-link" data-remove="closest">Eliminar</button></div>
+            <div class="three-col compact">
+              <label><span>Icono</span><input type="text" name="casino_icon[]" maxlength="10" value="{{ casino.icon }}" required></label>
+              <label class="wide"><span>Nombre</span><input type="text" name="casino_name[]" maxlength="80" value="{{ casino.name }}" required></label>
+            </div>
+            <label><span>Enlaces https</span><textarea name="casino_links[]" rows="4" required>{% for link in casino.links %}{{ link }}{% if not loop.last %}
+{% endif %}{% endfor %}</textarea></label>
+          </div>
+          {% endfor %}
+        </div>
+      </article>
+
+      <article class="panel-card panel-card-full">
+        <div class="card-head">
+          <div>
+            <h2>FAQ</h2>
+            <p>Puedes añadir, quitar y reescribir preguntas frecuentes.</p>
+          </div>
+          <button type="button" class="ghost-btn" id="addFaqBtn">+ Añadir FAQ</button>
+        </div>
+        <div id="faqRepeater" class="repeater-stack">
+          {% for faq in faqs %}
+          <div class="repeater-item faq-item-admin">
+            <div class="repeater-toolbar"><strong>FAQ {{ loop.index }}</strong><button type="button" class="danger-link" data-remove="closest">Eliminar</button></div>
+            <label><span>Pregunta</span><input type="text" name="faq_question[]" maxlength="180" value="{{ faq.question }}" required></label>
+            <label><span>Respuesta</span><textarea name="faq_answer[]" rows="4" maxlength="700" required>{{ faq.answer }}</textarea></label>
+          </div>
+          {% endfor %}
+        </div>
+      </article>
+
+      <div class="submit-row">
+        <button type="submit" class="primary-btn large">Guardar cambios</button>
+      </div>
+    </form>
+  </section>
+
+  <aside class="admin-side">
+    <section class="panel-card sticky-card">
+      <h2>Seguridad</h2>
+      <ul class="security-list">
+        <li>Autenticación real en servidor</li>
+        <li>Contraseña hasheada</li>
+        <li>Persistencia en SQLite</li>
+        <li>Protección CSRF</li>
+        <li>Rate limiting de login</li>
+      </ul>
+    </section>
+
+    <section class="panel-card sticky-card">
+      <h2>Cambiar credenciales</h2>
+      <form method="post" action="{{ url_for('admin_change_credentials') }}" class="stack-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <label><span>Usuario nuevo</span><input type="text" name="new_username" maxlength="80" value="{{ admin_username }}" required></label>
+        <label><span>Contraseña actual</span><input type="password" name="current_password" required></label>
+        <label><span>Nueva contraseña</span><input type="password" name="new_password" minlength="12" required></label>
+        <label><span>Confirmar contraseña</span><input type="password" name="confirm_password" minlength="12" required></label>
+        <button type="submit" class="primary-btn">Actualizar credenciales</button>
+      </form>
+    </section>
+  </aside>
+</main>
+
+<template id="casinoTemplate">
+  <div class="repeater-item casino-item">
+    <div class="repeater-toolbar"><strong>Nueva plataforma</strong><button type="button" class="danger-link" data-remove="closest">Eliminar</button></div>
+    <div class="three-col compact">
+      <label><span>Icono</span><input type="text" name="casino_icon[]" maxlength="10" value="🎰" required></label>
+      <label class="wide"><span>Nombre</span><input type="text" name="casino_name[]" maxlength="80" value="" required></label>
+    </div>
+    <label><span>Enlaces https</span><textarea name="casino_links[]" rows="4" placeholder="https://ejemplo.com" required></textarea></label>
+  </div>
+</template>
+
+<template id="faqTemplate">
+  <div class="repeater-item faq-item-admin">
+    <div class="repeater-toolbar"><strong>Nueva FAQ</strong><button type="button" class="danger-link" data-remove="closest">Eliminar</button></div>
+    <label><span>Pregunta</span><input type="text" name="faq_question[]" maxlength="180" required></label>
+    <label><span>Respuesta</span><textarea name="faq_answer[]" rows="4" maxlength="700" required></textarea></label>
+  </div>
+</template>
+
+<script>
+  (() => {
+    const bindRemoveButtons = scope => {
+      scope.querySelectorAll('[data-remove="closest"]').forEach(btn => {
+        btn.onclick = () => {
+          const item = btn.closest('.repeater-item');
+          const container = item?.parentElement;
+          if (container && container.children.length > 1) item.remove();
+        };
+      });
+    };
+
+    bindRemoveButtons(document);
+
+    const addFromTemplate = (templateId, containerId) => {
+      const template = document.getElementById(templateId);
+      const container = document.getElementById(containerId);
+      const fragment = template.content.cloneNode(true);
+      container.appendChild(fragment);
+      bindRemoveButtons(container);
+    };
+
+    document.getElementById('addCasinoBtn').addEventListener('click', () => addFromTemplate('casinoTemplate', 'casinoRepeater'));
+    document.getElementById('addFaqBtn').addEventListener('click', () => addFromTemplate('faqTemplate', 'faqRepeater'));
+  })();
+</script>
+{% endblock %}

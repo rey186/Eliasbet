@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Error {{ code }}{% endblock %}
+{% block body_class %}admin-body-bg{% endblock %}
+
+{% block content %}
+<main class="auth-shell">
+  <section class="auth-card">
+    <div class="auth-kicker">Error {{ code }}</div>
+    <h1>No se ha podido completar la acción</h1>
+    <p class="auth-sub">{{ message }}</p>
+    <div class="auth-foot auth-foot-inline">
+      <a class="ghost-btn" href="{{ url_for('index') }}">Ir a la landing</a>
+      <a class="primary-btn" href="{{ url_for('admin_login') }}">Ir al acceso admin</a>
+    </div>
+  </section>
+</main>
+{% endblock %}

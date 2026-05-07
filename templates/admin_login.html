@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Acceso administrador{% endblock %}
+{% block body_class %}admin-body-bg{% endblock %}
+
+{% block content %}
+<main class="auth-shell">
+  <section class="auth-card">
+    <div class="auth-kicker">Backend real + autenticación</div>
+    <h1>Acceso al panel</h1>
+    <p class="auth-sub">Inicia sesión para editar la landing, guardar cambios en la base de datos y administrar el contenido de forma segura.</p>
+
+    <form method="post" class="auth-form" novalidate>
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <label>
+        <span>Usuario</span>
+        <input type="text" name="username" autocomplete="username" required maxlength="80">
+      </label>
+      <label>
+        <span>Contraseña</span>
+        <input type="password" name="password" autocomplete="current-password" required>
+      </label>
+      <button type="submit" class="primary-btn">Entrar</button>
+    </form>
+
+    <div class="auth-foot">
+      <a href="{{ url_for('index') }}">← Volver a la landing</a>
+    </div>
+  </section>
+</main>
+{% endblock %}

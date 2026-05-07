@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ settings.site_title }}{% endblock %}
+
+{% block content %}
+<header>
+  <div class="logo">{{ settings.logo }}</div>
+  <a class="nav-btn" href="{{ settings.wa_url }}" target="_blank" rel="noopener noreferrer nofollow">✨ Activar Bono</a>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="hero-badge">{{ settings.hero_badge }}</div>
+    <h1>{{ settings.hero_title | e | replace('\n', '<br>') | safe }}</h1>
+    <p>{{ settings.hero_sub }}</p>
+    <div class="hero-bonus">{{ settings.hero_bonus }}</div>
+    <div class="cta">
+      <a class="cta-main" href="#casinos">🎰 Ver Casinos</a>
+      <a class="cta-wa" href="{{ settings.wa_url }}" target="_blank" rel="noopener noreferrer nofollow">💬 WhatsApp</a>
+    </div>
+  </section>
+
+  <div class="stats-bar" aria-label="Estadísticas destacadas">
+    <div class="stat-item"><div class="stat-num">{{ settings.stat_platforms }}</div><div class="stat-label">Plataformas</div></div>
+    <div class="stat-item"><div class="stat-num">{{ settings.stat_support }}</div><div class="stat-label">Soporte</div></div>
+    <div class="stat-item"><div class="stat-num">{{ settings.stat_withdrawal }}</div><div class="stat-label">Retiro diario</div></div>
+    <div class="stat-item"><div class="stat-num">{{ settings.stat_bonus }}</div><div class="stat-label">Bono 1ª carga</div></div>
+  </div>
+
+  <section class="promo-wrap">
+    <div class="bonus-card">
+      <div class="bonus-tag">{{ settings.promo_tag }}</div>
+      <h2>{{ settings.promo_title }}</h2>
+      <div class="bonus-amount">{{ settings.promo_amount }}</div>
+      <p class="promo-sub">{{ settings.promo_sub }}</p>
+      <div class="bonus-details">
+        <div class="bonus-detail"><div class="d-label">Apuesta máx. slot</div><div class="d-val">{{ settings.promo_slot }}</div></div>
+        <div class="bonus-detail"><div class="d-label">Retiro mínimo</div><div class="d-val">{{ settings.promo_withdraw_min }}</div></div>
+        <div class="bonus-detail"><div class="d-label">Retiro diario</div><div class="d-val">{{ settings.promo_withdraw_max }}</div></div>
+      </div>
+      <a class="bonus-cta" href="{{ settings.wa_url }}" target="_blank" rel="noopener noreferrer nofollow">{{ settings.promo_cta }}</a>
+    </div>
+  </section>
+
+  <section class="section casinos-bg" id="casinos">
+    <h2 class="section-title">🎰 Plataformas Disponibles</h2>
+    <div class="gold-line"></div>
+    <p class="section-sub">Accedé a las mejores plataformas con bonos exclusivos</p>
+    <div class="grid">
+      {% for casino in casinos %}
+      <article class="card">
+        <div class="card-icon">{{ casino.icon }}</div>
+        <h3>{{ casino.name }}</h3>
+        {% for link in casino.links %}
+        <a class="link-btn" href="{{ link }}" target="_blank" rel="noopener noreferrer nofollow sponsored">🔗 {{ link | replace('https://', '') | replace('http://', '') }}</a>
+        {% endfor %}
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="section steps-bg">
+    <h2 class="section-title">⚡ Cómo Empezar</h2>
+    <div class="gold-line"></div>
+    <p class="section-sub">Pasos simples para comenzar a ganar</p>
+    <div class="steps-grid">
+      <div class="step-card"><div class="step-num">1</div><h3>Contactanos</h3><p>Escribinos por WhatsApp y un asesor te va a atender de inmediato las 24hs.</p></div>
+      <div class="step-card"><div class="step-num">2</div><h3>Activá tu Bono</h3><p>Elegí la plataforma, realizá tu primera carga y recibí tu bono al instante.</p></div>
+      <div class="step-card"><div class="step-num">3</div><h3>Jugá y Retirá</h3><p>Disfrutá de los juegos y retirá tus ganancias de forma rápida y segura.</p></div>
+      <div class="step-card"><div class="step-num">4</div><h3>Seguí Ganando</h3><p>Accedé a promos exclusivas para jugadores frecuentes y multiplicá tus ganancias.</p></div>
+    </div>
+  </section>
+
+  <section class="section testi-bg">
+    <h2 class="section-title">💬 Lo que dicen nuestros jugadores</h2>
+    <div class="gold-line"></div>
+    <p class="section-sub">Miles de jugadores confían en {{ settings.logo }}</p>
+    <div class="testi-grid">
+      {% for t in testimonials %}
+      <article class="testi-card">
+        <div class="stars">{{ '★' * t.stars }}</div>
+        <div class="testi-text">{{ t.text }}</div>
+        <div class="testi-author">
+          <div class="testi-avatar">{{ t.name.split(' ')[0][0] }}{{ t.name.split(' ')[1][0] if t.name.split(' ')|length > 1 else '' }}</div>
+          <div>
+            <div class="testi-name">{{ t.name }}</div>
+            <div class="testi-info">{{ t.info }}</div>
+          </div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="section faq-bg" id="faq">
+    <h2 class="section-title">❓ Preguntas Frecuentes</h2>
+    <div class="gold-line"></div>
+    <div class="faq-list">
+      {% for faq in faqs %}
+      <div class="faq-item">
+        <button class="faq-q" type="button" aria-expanded="false"><span>{{ faq.question }}</span><span class="faq-icon">+</span></button>
+        <div class="faq-a">{{ faq.answer }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-logo">{{ settings.site_title }}</div>
+  <div class="footer-links">
+    <a href="#casinos">Plataformas</a>
+    <a href="{{ settings.wa_url }}" target="_blank" rel="noopener noreferrer nofollow">WhatsApp</a>
+    <a href="#faq">FAQ</a>
+    <a href="{{ url_for('admin_login') }}" rel="nofollow">Admin</a>
+  </div>
+  <div class="footer-copy">+18 | Solo mayores de edad | Juega responsablemente</div>
+</footer>
+
+<a class="whatsapp-float" href="{{ settings.wa_url }}" target="_blank" rel="noopener noreferrer nofollow" aria-label="Contactar por WhatsApp">💬</a>
+
+<script>
+  (() => {
+    const items = Array.from(document.querySelectorAll('.faq-item'));
+    items.forEach(item => {
+      const button = item.querySelector('.faq-q');
+      button.addEventListener('click', () => {
+        const isOpen = item.classList.contains('open');
+        items.forEach(other => {
+          other.classList.remove('open');
+          const otherButton = other.querySelector('.faq-q');
+          if (otherButton) otherButton.setAttribute('aria-expanded', 'false');
+        });
+        if (!isOpen) {
+          item.classList.add('open');
+          button.setAttribute('aria-expanded', 'true');
+        }
+      });
+    });
+  })();
+</script>
+{% endblock %}
