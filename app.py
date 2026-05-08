@@ -24,10 +24,11 @@ DB_PATH = BASE_DIR / "app.db"
 
 app = Flask(__name__)
 app.config.update(
-    SECRET_KEY=os.getenv("SECRET_KEY", secrets.token_hex(32)),
+    if not app.config["SECRET_KEY"]:
+    raise RuntimeError("Debes definir SECRET_KEY en variables de entorno")
     SESSION_COOKIE_HTTPONLY=True,
     SESSION_COOKIE_SAMESITE="Lax",
-    SESSION_COOKIE_SECURE=os.getenv("SESSION_COOKIE_SECURE", "false").lower() == "true",
+    SESSION_COOKIE_SECURE=os.getenv("SESSION_COOKIE_SECURE", "true").lower() == "true",
     MAX_CONTENT_LENGTH=2 * 1024 * 1024,
 )
 
